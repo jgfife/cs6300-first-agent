@@ -52,5 +52,6 @@ agent = CodeAgent(
     max_steps=3
 )
 
-answer = agent.run("What is 23 times 17 minus 42?")
+question = input("Enter your question: ")
+answer = agent.run(question)
 print(f"Agent returned answer: {answer}")

@@ -3,6 +3,7 @@
 **Weight:** 100 points  
 **Where:** Submit on Canvas (repo link + PDF)  
 **What:** Choose a domain, perform a PEAS analysis, then design and implement an LLM-based agent using the `smolagents` library with the Gemini API. Demonstrate your agent solving tasks in its environment.
+**Repo:** https://github.com/fractal13/ut-cs6300-assignment-01
 
 ---
 
