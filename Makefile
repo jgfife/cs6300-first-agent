@@ -29,4 +29,6 @@ install-pip: $(VENV)
 code-agent-gemini-demo:
 	. $(VENV)/bin/activate; src/code_agent_gemini_demo.py
 
+research-agent-demo:
+	. $(VENV)/bin/activate; src/investment_research_agent.py
 
