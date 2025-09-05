@@ -4,6 +4,7 @@ transformers
 smolagents[litellm]
 smolagents[transformers]
 smolagents[openai]
+ddgs
 requests
 markdownify
 duckduckgo-search

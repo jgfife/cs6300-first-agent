@@ -2,13 +2,15 @@
 
 import re
 import requests
+import dotenv
+import os
 from markdownify import markdownify
 from requests.exceptions import RequestException
 from smolagents import (
     CodeAgent,
     ToolCallingAgent,
     OpenAIServerModel,
-    WebSearchTool,
+    DuckDuckGoSearchTool,
     tool
 )
 
@@ -42,31 +44,44 @@ def visit_webpage(url: str) -> str:
         return f"Error fetching the webpage: {str(e)}"
     except Exception as e:
         return f"An unexpected error occurred: {str(e)}"
-    
-import dotenv
-import os
-dotenv.load_dotenv()
 
+dotenv.load_dotenv()
 model_id="gemini-2.5-flash"
 model = OpenAIServerModel(model_id=model_id,
                           api_base="https://generativelanguage.googleapis.com/v1beta/openai/",
                           api_key=os.getenv("GEMINI_API_KEY"),
                           )
 
-web_agent = ToolCallingAgent(
-    tools=[WebSearchTool(), visit_webpage],
+seeker = ToolCallingAgent(
+    tools=[DuckDuckGoSearchTool(), visit_webpage],
     model=model,
     max_steps=3,
-    name="web_search_agent",
-    description="Runs web searches for you.",
+    name="search_agent",
+    description="Runs web searches for investment information for you.",
+    instructions="You are a helpful research assistant that can search the web and visit webpages to gather information about investment-related topics. You respond with a concise summary of the information you pages you visit.",
 )
 
-manager_agent = CodeAgent(
+jefe = CodeAgent(
     tools=[],
     model=model,
-    managed_agents=[web_agent],
+    managed_agents=[seeker],
     additional_authorized_imports=["time", "numpy", "pandas"],
+    instructions="You are a helpful research assistant that can only answer investment-related questions and visit webpages that pertain to the queried company to gather information. If the question is not investment-related, respond with 'I can only answer investment-related questions.'",
 )
 
-question = input("Enter your question: ")
-answer = manager_agent.run(question)
+while True:
+    try:
+        question = input("How can I help you? ")
+        if question.lower() in ['exit', 'quit', 'q']:
+            print("Goodbye!")
+            break
+        
+        answer = jefe.run(question)
+        print(f"\nAnswer: {answer}\n")
+        
+    except KeyboardInterrupt:
+        print("\nGoodbye!")
+        break
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        continue

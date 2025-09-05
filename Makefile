@@ -26,9 +26,6 @@ install-deb:
 install-pip: $(VENV)
 	. $(VENV)/bin/activate; pip3 install --upgrade -r requirements.txt
 
-code-agent-gemini-demo:
-	. $(VENV)/bin/activate; src/code_agent_gemini_demo.py
-
-research-agent-demo:
+research-agent:
 	. $(VENV)/bin/activate; src/investment_research_agent.py
 
