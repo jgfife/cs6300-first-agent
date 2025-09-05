@@ -4,6 +4,8 @@ import re
 import requests
 import dotenv
 import os
+from contextlib import redirect_stdout
+from datetime import datetime
 from markdownify import markdownify
 from requests.exceptions import RequestException
 from smolagents import (
@@ -75,10 +77,19 @@ while True:
         if question.lower() in ['exit', 'quit', 'q']:
             print("Goodbye!")
             break
+
+        answer = ""
+        # Write answer to text file
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        filename = f"logs/investment_research_{timestamp}.txt"
+        with open(filename, 'w', encoding='utf-8') as f:
+            # Redirect stdout within this context
+            with redirect_stdout(f): 
+                answer = jefe.run(question)
         
-        answer = jefe.run(question)
-        print(f"\nAnswer: {answer}\n")
-        
+        print(f"\nAnswer:\n{answer}\n")
+        print(f"Full interaction logged to {filename}\n")
+
     except KeyboardInterrupt:
         print("\nGoodbye!")
         break
