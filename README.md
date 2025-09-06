@@ -25,13 +25,14 @@ export GEMINI_API_KEY="your_api_key_here"
 
 # Alternatively you can run make commands
 make install # install dependencies
-make research-agent # run main agent
-make test # run tests
 ```
 ### 2. Run the Agent
 ```bash
 # Interactive mode
 python src/investment_research_agent.py
+
+# Alternatively you can run make commands
+make research-agent # run main agent
 
 # Example questions to try:
 # - "Who is the CEO of Apple?"
@@ -46,6 +47,9 @@ pytest tests/ -v
 
 # Run just the CEO test
 pytest tests/test_investment_research_agent.py::TestInvestmentResearchAgent::test_apple_ceo_question -v
+
+# Alternatively you can run make commands
+make test # run tests
 ```
 
 ## API Setup
