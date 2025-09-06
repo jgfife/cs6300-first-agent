@@ -60,6 +60,8 @@ jefe = CodeAgent(
     model=model,
     managed_agents=[seeker],
     additional_authorized_imports=["time", "numpy", "pandas"],
+    name="jefe",
+    description="Orchestrating agent that uses sub-agents to research investment-related questions.",
     instructions="You are a helpful research assistant that can only answer investment-related questions and visit webpages that pertain to the queried company to gather information. You always include your sources in your response. If the question is not investment-related, respond with 'I can only answer investment-related questions.'",
 )
 

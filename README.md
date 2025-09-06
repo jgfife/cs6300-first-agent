@@ -22,8 +22,12 @@ pip install -r requirements.txt
 # Set up your Gemini API key
 export GEMINI_API_KEY="your_api_key_here"
 # Or create a .env file with: GEMINI_API_KEY=your_api_key_here
-```
 
+# Alternatively you can run make commands
+make install # install dependencies
+make research-agent # run main agent
+make test # run tests
+```
 ### 2. Run the Agent
 ```bash
 # Interactive mode
