@@ -2,6 +2,8 @@
 
 An AI-powered investment research assistant built with Hugging Face smolagents and Google Gemini.
 
+## Disclaimer: This is a toy agent and should not be relied upon for actual investment advice!
+
 ## Features
 
 - **Investment-focused Q&A**: Answers questions about companies, stocks, and financial topics

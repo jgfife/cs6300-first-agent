@@ -5,7 +5,6 @@ import dotenv
 import os
 from contextlib import redirect_stdout
 from datetime import datetime
-from markdownify import markdownify
 from requests.exceptions import RequestException
 from smolagents import (
     CodeAgent,
