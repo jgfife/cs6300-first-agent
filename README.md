@@ -40,6 +40,7 @@ pytest tests/ -v
 
 # Run just the CEO test
 pytest tests/test_investment_research_agent.py::TestInvestmentResearchAgent::test_apple_ceo_question -v
+```
 
 ## API Setup
 
