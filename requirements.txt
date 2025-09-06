@@ -6,7 +6,6 @@ smolagents[transformers]
 smolagents[openai]
 ddgs
 requests
-markdownify
 duckduckgo-search
 wikipedia
 pandas

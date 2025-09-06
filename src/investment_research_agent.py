@@ -17,13 +17,13 @@ from smolagents import (
 
 @tool
 def visit_webpage(url: str) -> str:
-    """Visits a webpage at the given URL and returns its content as a markdown string.
+    """Visits a webpage at the given URL and returns its content as text.
 
     Args:
         url: The URL of the webpage to visit.
 
     Returns:
-        The content of the webpage converted to Markdown, or an error message if the request fails.
+        The content of the webpage, or an error message if the request fails.
     """
     try:
         # Send a GET request to the URL with proper headers
@@ -33,10 +33,7 @@ def visit_webpage(url: str) -> str:
         response = requests.get(url, headers=headers)
         response.raise_for_status()  # Raise an exception for bad status codes
 
-        # Convert the HTML content to Markdown
-        markdown_content = markdownify(response.text).strip()
-
-        return markdown_content
+        return response.text
 
     except RequestException as e:
         return f"Error fetching the webpage: {str(e)}"
