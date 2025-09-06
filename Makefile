@@ -26,6 +26,9 @@ install-deb:
 install-pip: $(VENV)
 	. $(VENV)/bin/activate; pip3 install --upgrade -r requirements.txt
 
+test: $(VENV)
+	. $(VENV)/bin/activate; pytest tests/ -v
+
 research-agent:
 	. $(VENV)/bin/activate; src/investment_research_agent.py
 

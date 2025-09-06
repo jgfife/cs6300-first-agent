@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-import re
 import requests
 import dotenv
 import os
@@ -37,9 +36,6 @@ def visit_webpage(url: str) -> str:
         # Convert the HTML content to Markdown
         markdown_content = markdownify(response.text).strip()
 
-        # Remove multiple line breaks
-        markdown_content = re.sub(r"\n{3,}", "\n\n", markdown_content)
-
         return markdown_content
 
     except RequestException as e:
@@ -68,31 +64,36 @@ jefe = CodeAgent(
     model=model,
     managed_agents=[seeker],
     additional_authorized_imports=["time", "numpy", "pandas"],
-    instructions="You are a helpful research assistant that can only answer investment-related questions and visit webpages that pertain to the queried company to gather information. If the question is not investment-related, respond with 'I can only answer investment-related questions.'",
+    instructions="You are a helpful research assistant that can only answer investment-related questions and visit webpages that pertain to the queried company to gather information. You always include your sources in your response. If the question is not investment-related, respond with 'I can only answer investment-related questions.'",
 )
 
-while True:
-    try:
-        question = input("How can I help you? ")
-        if question.lower() in ['exit', 'quit', 'q']:
-            print("Goodbye!")
+def main():
+    """Interactive CLI for the investment research agent."""
+    while True:
+        try:
+            question = input("How can I help you? ")
+            if question.lower() in ['exit', 'quit', 'q']:
+                print("Goodbye!")
+                break
+
+            answer = ""
+
+            # Write answer to text file
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            filename = f"logs/investment_research_{timestamp}.txt"
+            with open(filename, 'w', encoding='utf-8') as f:
+                with redirect_stdout(f): 
+                    answer = jefe.run(question)
+            
+            print(f"\nAnswer:\n{answer}\n")
+            print(f"Full interaction logged to {filename}\n")
+
+        except KeyboardInterrupt:
+            print("\nGoodbye!")
             break
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            continue
 
-        answer = ""
-        # Write answer to text file
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        filename = f"logs/investment_research_{timestamp}.txt"
-        with open(filename, 'w', encoding='utf-8') as f:
-            # Redirect stdout within this context
-            with redirect_stdout(f): 
-                answer = jefe.run(question)
-        
-        print(f"\nAnswer:\n{answer}\n")
-        print(f"Full interaction logged to {filename}\n")
-
-    except KeyboardInterrupt:
-        print("\nGoodbye!")
-        break
-    except Exception as e:
-        print(f"An error occurred: {e}")
-        continue
+if __name__ == "__main__":
+    main()

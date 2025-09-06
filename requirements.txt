@@ -16,4 +16,6 @@ num2words
 quanto
 bitsandbytes
 optimum-quanto
+pytest
+pytest-mock
 
