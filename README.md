@@ -1,6 +1,6 @@
 # Investment Research Agent
 
-An AI-powered investment research assistant built with Hugging Face smolagents and Google Gemini.
+An AI-powered investment research assistant built with Hugging Face smolagents, Alphavantage, and Google Gemini.
 
 ## Disclaimer: This is a toy agent and should not be relied upon for actual investment advice!
 
@@ -19,8 +19,9 @@ An AI-powered investment research assistant built with Hugging Face smolagents a
 # Install dependencies
 pip install -r requirements.txt
 
-# Set up your Gemini API key
+# Set up your Gemini API and Alphavantage key
 export GEMINI_API_KEY="your_api_key_here"
+export ALPHAVANTAGE_API_KEY="your_api_key_here"
 # Or create a .env file with: GEMINI_API_KEY=your_api_key_here
 
 # Alternatively you can run make commands
@@ -59,6 +60,12 @@ make test # run tests
 2. Click "Get API key" 
 3. Create a new API key
 4. Set it as `GEMINI_API_KEY` environment variable
+
+### Alphavantage API Key
+1. Visit [Alphavantage Website](https://www.alphavantage.co/support/#api-key)
+2. Fill out form
+2. Click "GET FREE API KEY" 
+4. Set it as `ALPHAVANTAGE_API_KEY` environment variable
 
 ### Supported Models
 - Primary: `gemini-2.5-flash` (configured in code)

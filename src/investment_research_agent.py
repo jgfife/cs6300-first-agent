@@ -14,6 +14,8 @@ from smolagents import (
     tool
 )
 
+dotenv.load_dotenv()
+
 @tool
 def visit_webpage(url: str) -> str:
     """Visits a webpage at the given URL and returns its content as text.
@@ -38,8 +40,30 @@ def visit_webpage(url: str) -> str:
         return f"Error fetching the webpage: {str(e)}"
     except Exception as e:
         return f"An unexpected error occurred: {str(e)}"
+    
+# Call Alphavantage API for company info https://www.alphavantage.co/documentation/#company-overview
+@tool
+def get_company_overview(symbol: str) -> str:
+    """Calls the Alphavantage API and returns company overview content as json string.
 
-dotenv.load_dotenv()
+    Args:
+        symbol: The stock symbol of the company to retrieve information for.
+
+    Returns:
+        The API content as a json string, or an error message if the request fails.
+    """
+    try:
+        url = f"https://www.alphavantage.co/query?function=OVERVIEW&symbol={symbol}&apikey={os.getenv('ALPHAVANTAGE_API_KEY')}"
+        response = requests.get(url)
+        response.raise_for_status()  # Raise an exception for bad status codes
+
+        return response.json()
+
+    except RequestException as e:
+        return f"Error fetching the webpage: {str(e)}"
+    except Exception as e:
+        return f"An unexpected error occurred: {str(e)}"
+
 model_id="gemini-2.5-flash"
 model = OpenAIServerModel(model_id=model_id,
                           api_base="https://generativelanguage.googleapis.com/v1beta/openai/",
@@ -47,12 +71,12 @@ model = OpenAIServerModel(model_id=model_id,
                           )
 
 seeker = ToolCallingAgent(
-    tools=[DuckDuckGoSearchTool(), visit_webpage],
+    tools=[DuckDuckGoSearchTool(), visit_webpage, get_company_overview],
     model=model,
     max_steps=3,
     name="search_agent",
     description="Runs web searches for investment information for you.",
-    instructions="You are a helpful research assistant that can search the web and visit webpages to gather information about investment-related topics. You respond with a concise summary of the information you pages you visit.",
+    instructions="You are a helpful research assistant that can search the web, visit webpages, and call APIs to gather information about investment-related topics. You respond with a concise summary of the information you pages you visit.",
 )
 
 jefe = CodeAgent(
