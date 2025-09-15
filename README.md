@@ -128,8 +128,7 @@ The Phoenix server runs headlessly in the background, allowing full interaction 
 ## Architecture
 
 - **jefe (CodeAgent)**: Main orchestrator that manages sub-agents and handles user queries
-- **seeker (ToolCallingAgent)**: Specialized search agent with web search and page visit capabilities
-- **visit_webpage**: Custom tool for fetching and converting web content to markdown
+- **seeker (ToolCallingAgent)**: Specialized search agent with web search, page visit, and API calling capabilities
 - **DuckDuckGoSearchTool**: Built-in search functionality
 
 ## Testing
@@ -151,4 +150,4 @@ Built with:
 - **Google Gemini**: LLM backend via OpenAI-compatible API
 - **DuckDuckGo**: Web search capabilities
 - **pytest**: Testing framework
-- **requests + markdownify**: Web content processing
+- **Alphavantage API**: Company data API
