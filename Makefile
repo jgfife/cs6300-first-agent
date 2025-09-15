@@ -30,5 +30,9 @@ test: $(VENV)
 	. $(VENV)/bin/activate; pytest tests/ -v
 
 research-agent:
-	. $(VENV)/bin/activate; src/investment_research_agent.py
+	. $(VENV)/bin/activate; python3 -m phoenix.server.main serve > /dev/null 2>&1 & python3 src/investment_research_agent.py
+
+kill-phoenix:
+	@echo "Killing Phoenix server processes..."
+	@pkill -f "phoenix.server.main" && echo "Phoenix server killed" || echo "No Phoenix server processes found"
 

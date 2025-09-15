@@ -4,6 +4,7 @@ transformers
 smolagents[litellm]
 smolagents[transformers]
 smolagents[openai]
+smolagents[telemetry,toolkit]
 ddgs
 requests
 duckduckgo-search
@@ -17,4 +18,5 @@ bitsandbytes
 optimum-quanto
 pytest
 pytest-mock
+arize-phoenix
 

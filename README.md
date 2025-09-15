@@ -33,12 +33,15 @@ make install # install dependencies
 python src/investment_research_agent.py
 
 # Alternatively you can run make commands
-make research-agent # run main agent
+make research-agent # start phoenix server for open telemetry and run main agent
 
 # Example questions to try:
 # - "Who is the CEO of Apple?"
 # - "What is Tesla's stock ticker symbol?"
 # - "Tell me about Microsoft's recent earnings"
+
+# Once done, cleanup the Phoenix server
+make kill-phoenix
 ```
 
 ### 3. Run Tests
@@ -81,10 +84,46 @@ cs6300-first-agent/
 ├── tests/
 │   ├── test_investment_research_agent.py # Test suite
 │   └── README.md                        # Testing documentation
-├── logs/                                # Conversation logs (auto-created)
 ├── requirements.txt                     # Dependencies
 ├── pytest.ini                         # Test configuration
+├── Makefile                            # Build and run commands
+├── .env.template                       # Environment variables template
+└── README.md                           # This file
 ```
+
+## Phoenix Server - Open Telemetry
+
+This project integrates with Phoenix Server for comprehensive observability and tracing of agent interactions. Phoenix provides real-time monitoring of:
+
+- Agent conversation flows
+- Tool usage and performance
+- API call traces and latency
+- Error tracking and debugging
+
+### Accessing Phoenix Dashboard
+
+When running the agent with `make research-agent`, the Phoenix server automatically starts in the background. You can access the observability dashboard at:
+
+**http://localhost:6006/projects/**
+
+The dashboard provides:
+- Real-time trace visualization
+- Performance metrics
+- Conversation history
+- Tool usage analytics
+- Error logs and debugging information
+
+### Phoenix Server Management
+
+```bash
+# Start agent with Phoenix server
+make research-agent
+
+# Stop Phoenix server when done
+make kill-phoenix
+```
+
+The Phoenix server runs headlessly in the background, allowing full interaction with the agent while collecting telemetry data.
 
 ## Architecture
 
@@ -100,6 +139,8 @@ The test suite verifies:
 - ✅ Stock ticker symbol retrieval (AAPL for Apple) 
 - ✅ Investment question handling
 - ✅ Non-investment question rejection
+- ✅ Ticker symbol tool functionality
+- ✅ Company overview tool functionality
 
 See `tests/README.md` for detailed testing documentation.
 

@@ -66,6 +66,70 @@ class TestInvestmentResearchAgent:
         
         rejected = any(phrase in answer_str for phrase in rejection_phrases)
         assert rejected, f"Expected rejection of non-investment question but got: {answer}"
+        
+    def test_find_ticker_symbol_tool(self):
+        """Test that the find_ticker_symbol tool works correctly"""
+        from investment_research_agent import find_ticker_symbol
+        
+        # Test with a well-known company
+        company = "Apple"
+        
+        # Call the tool directly
+        result = find_ticker_symbol(company)
+        
+        # Convert result to string if it's not already
+        result_str = str(result).lower()
+        
+        # Check that we don't get an error message
+        assert "error" not in result_str, f"Expected successful API call but got error: {result}"
+        
+        # For a valid API response, we should get JSON-like content
+        # The Alphavantage API returns bestMatches array
+        assert "bestmatches" in result_str or "bestMatches" in str(result), f"Expected ticker search results but got: {result}"
+        
+    def test_find_ticker_symbol_handles_invalid_input(self):
+        """Test that the find_ticker_symbol tool handles invalid input gracefully"""
+        from investment_research_agent import find_ticker_symbol
+        
+        # Test with empty or nonsensical input
+        result = find_ticker_symbol("")
+        
+        # Should either return empty results or handle gracefully
+        # The exact behavior depends on the API response
+        assert result is not None, "Expected some response even for empty input"
+        
+    def test_get_company_overview_tool(self):
+        """Test that the get_company_overview tool works correctly"""
+        from investment_research_agent import get_company_overview
+        
+        # Test with a well-known ticker symbol
+        symbol = "AAPL"
+        
+        # Call the tool directly
+        result = get_company_overview(symbol)
+        
+        # Convert result to string if it's not already
+        result_str = str(result).lower()
+        
+        # Check that we don't get an error message
+        assert "error" not in result_str, f"Expected successful API call but got error: {result}"
+        
+        # For a valid company overview, we should get company info
+        # The Alphavantage API returns company details like Name, Symbol, etc.
+        expected_fields = ["symbol", "name", "description"]
+        field_found = any(field in result_str for field in expected_fields)
+        assert field_found, f"Expected company overview data but got: {result}"
+        
+    def test_get_company_overview_handles_invalid_symbol(self):
+        """Test that the get_company_overview tool handles invalid symbols gracefully"""
+        from investment_research_agent import get_company_overview
+        
+        # Test with invalid ticker symbol
+        result = get_company_overview("INVALID123")
+        
+        # Should either return empty results or handle gracefully
+        # The exact behavior depends on the API response
+        assert result is not None, "Expected some response even for invalid symbol"
 
 
 if __name__ == "__main__":

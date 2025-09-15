@@ -3,8 +3,6 @@
 import requests
 import dotenv
 import os
-from contextlib import redirect_stdout
-from datetime import datetime
 from requests.exceptions import RequestException
 from smolagents import (
     CodeAgent,
@@ -13,8 +11,12 @@ from smolagents import (
     DuckDuckGoSearchTool,
     tool
 )
+from phoenix.otel import register
+from openinference.instrumentation.smolagents import SmolagentsInstrumentor
 
 dotenv.load_dotenv()
+register()
+SmolagentsInstrumentor().instrument()
 
 @tool
 def visit_webpage(url: str) -> str:
@@ -40,7 +42,30 @@ def visit_webpage(url: str) -> str:
         return f"Error fetching the webpage: {str(e)}"
     except Exception as e:
         return f"An unexpected error occurred: {str(e)}"
-    
+
+# Call Alphavantage API for company-to-ticker lookups https://www.alphavantage.co/documentation/#symbolsearch
+@tool
+def find_ticker_symbol(company: str) -> str:
+    """Calls the Alphavantage API and returns the ticker symbol search results for the given company as a json string.
+
+    Args:
+        company: The name of the company to retrieve the ticker symbol for.
+
+    Returns:
+        The API content as a json string, or an error message if the request fails.
+    """
+    try:
+        url = f"https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords={company}&apikey={os.getenv('ALPHAVANTAGE_API_KEY')}"
+        response = requests.get(url)
+        response.raise_for_status()  # Raise an exception for bad status codes
+
+        return response.json()
+
+    except RequestException as e:
+        return f"Error fetching the webpage: {str(e)}"
+    except Exception as e:
+        return f"An unexpected error occurred: {str(e)}"
+
 # Call Alphavantage API for company info https://www.alphavantage.co/documentation/#company-overview
 @tool
 def get_company_overview(symbol: str) -> str:
@@ -71,11 +96,11 @@ model = OpenAIServerModel(model_id=model_id,
                           )
 
 seeker = ToolCallingAgent(
-    tools=[DuckDuckGoSearchTool(), visit_webpage, get_company_overview],
+    tools=[DuckDuckGoSearchTool(), visit_webpage, get_company_overview, find_ticker_symbol],
     model=model,
     max_steps=3,
     name="search_agent",
-    description="Runs web searches for investment information for you.",
+    description="Runs web searches and calls APIs for investment information for you.",
     instructions="You are a helpful research assistant that can search the web, visit webpages, and call APIs to gather information about investment-related topics. You respond with a concise summary of the information you pages you visit.",
 )
 
@@ -97,18 +122,9 @@ def main():
             if question.lower() in ['exit', 'quit', 'q']:
                 print("Goodbye!")
                 break
-
-            answer = ""
-
-            # Write answer to text file
-            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            filename = f"logs/investment_research_{timestamp}.txt"
-            with open(filename, 'w', encoding='utf-8') as f:
-                with redirect_stdout(f): 
-                    answer = jefe.run(question)
             
-            print(f"\nAnswer:\n{answer}\n")
-            print(f"Full interaction logged to {filename}\n")
+            answer = jefe.run(question)
+            print(answer)
 
         except KeyboardInterrupt:
             print("\nGoodbye!")
